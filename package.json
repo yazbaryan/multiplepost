@@ -1,0 +1,23 @@
+{
+  "name": "post",
+  "version": "1.0.0",
+  "description": "\"# empty\"",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yazbaryan/multiplepost.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/yazbaryan/multiplepost/issues"
+  },
+  "homepage": "https://github.com/yazbaryan/multiplepost#readme",
+  "dependencies": {
+    "express": "^4.16.3"
+  }
+}
