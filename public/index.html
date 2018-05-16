@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Hey</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+    <div id="app">Loading...</div>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.min.js"></script>
+    <script src="https://unpkg.com/vue-chartjs/dist/vue-chartjs.min.js"></script>
+
+    <script>
+    window.FontAwesomeConfig = {
+      searchPseudoElements: true
+    }
+
+    Vue.component('upload-modal', {
+      template: `<transition name="modal">
+        <div class="modal-mask" @click="$emit('close')">
+          <div class="modal-wrapper">
+            <div class="modal-container" @click.stop>
+              <div class="modal-body">
+                <slot name="body"></slot>
+              </div>
+            </div>
+          </div>
+        </div>
+      </transition>`
+    })
+
+    Vue.component('upload-form', {
+      props: [
+        'post'
+      ],
+      template: `<form class="upload-form" @submit.prevent="$emit('upload')">
+        <div class="form-group">
+          <label class="form-control image-file">
+            <div class="image-preview">
+              <div class="image-upload">
+                <i class="fas fa-upload"></i>
+              </div>
+
+              <div class="image-loading">
+                <i class="fas fa-loading"></i>
+              </div>
+
+              <img :src="post.image ? post.image : 'https://blog.stylingandroid.com/wp-content/themes/lontano-pro/images/no-image-slide.png'">
+            </div>
+            <input type="file" accept="image/jpeg,image/png" @change="onImageChange">
+          </label>
+
+          <textarea class="form-control" placeholder="caption..." v-model.trim="post.caption"></textarea>
+        </div>
+
+        <button class="btn btn-primary w-100" :disabled="!post.image || !post.caption">Submit</button>
+      </form>`,
+      methods: {
+        onImageChange(e) {
+          let file = e.target.files[0],
+              self = this
+
+          if (file) {
+            // const reader = new FileReader()
+            //
+            // reader.onload = function(e) {
+            //   self.post.image = e.target.result
+            // }
+            //
+            // reader.readAsDataURL(file)
+
+            this.post.image = file
+          }
+        }
+      }
+    })
+
+    var app = new Vue({
+      el: '#app',
+      data: {
+        post: {
+          image: null,
+          caption: null
+        },
+        def: null,
+        showModal: false
+      },
+      template: `<div class="container">
+        <button @click="showModal = true">Show Modal</button>
+        <upload-modal v-if="showModal" @close="showModal = false">
+          <upload-form slot="body" :post="post" :preview="preview" v-on:upload="upload"></upload-form>
+        </upload-modal>
+      </div>`,
+      methods: {
+        upload() {
+          let formData = new FormData();
+          for (var key in this.post) {
+            formData.append(key, this.post[key])
+          }
+
+          axios.post('http://localhost:3000/social/upload', formData)
+          .then(res => {
+            this.post = JSON.parse(JSON.stringify(this.def))
+            this.showModal = false
+          })
+          .catch(err => {
+            alert(err.message)
+          });
+        }
+      },
+      mounted() {
+        this.def = JSON.parse(JSON.stringify(this.post))
+      }
+    })
+    </script>
+  </body>
+</html>

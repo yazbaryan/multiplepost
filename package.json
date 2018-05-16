@@ -19,9 +19,15 @@
   "homepage": "https://github.com/yazbaryan/multiplepost#readme",
   "dependencies": {
     "axios": "^0.18.0",
+    "body-parser": "1.18.2",
     "cron": "^1.3.0",
     "dotenv": "^5.0.1",
     "express": "^4.16.3",
-    "instagram-private-api": "^0.6.7"
+    "instagram-private-api": "^0.6.7",
+    "multer": "1.3.0",
+    "needle": "2.2.1",
+    "npm": "6.0.1",
+    "restler": "3.4.0",
+    "sqlite3": "4.0.0"
   }
 }
